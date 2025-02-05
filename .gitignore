@@ -1,0 +1,13 @@
+# .gitignore à la racine du projet
+
+# Exclure les variables d'environnement
+**/.env
+
+# Node.js dependencies
+node_modules/
+
+# PHP vendor folder (si vous utilisez Composer)
+php-service/vendor/
+
+# Build outputs
+frontend/build/

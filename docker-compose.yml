@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: recette_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: recette_db
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+  php-service:
+    build: ./php-service
+    container_name: recette_php
+    restart: always
+    env_file:
+      - ./php-service/.env
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+
+  express-service:
+    build: ./express-service
+    container_name: recette_express
+    restart: always
+    environment:
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: recette_frontend
+    restart: always
+    ports:
+      - "3001:80"
+    depends_on:
+      - php-service
+      - express-service
+
+volumes:
+  db_data:
